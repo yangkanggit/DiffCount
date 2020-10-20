@@ -1,1 +1,3 @@
 # DiffCount
+基于beyondCompared 的代码差异行数统计工具
+使用多线程后台调用beyondCompared进行文件对比，有时会导致未知错误报错，工具会自动将对比失败的文件重新进行对比，因此可以忽略beyondCompared弹窗显示的错误信息，点击closeApplication.
