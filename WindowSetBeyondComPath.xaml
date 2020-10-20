@@ -1,0 +1,82 @@
+<Window x:Class="DiffCountByBeyond.WindowSetBeyondComPath"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiffCountByBeyond"
+        mc:Ignorable="d" WindowStyle="None"  SizeToContent="WidthAndHeight"
+        Title="SetBeyondComPath" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Border BorderThickness="1" BorderBrush="CornflowerBlue" Background="#dfe6ec" CornerRadius="4">
+            <StackPanel Width="350" Margin="10,10">
+                <Label>请配置BeyondCompared文件的安装路径：</Label>
+                <StackPanel Orientation="Horizontal">
+                    <Button Height="20" Width="55" Margin="5,0,0,5" Name="btn_Chose" Click="Btn_Chose_Click">选择</Button>
+                    <TextBox Height="20" Width="280" Margin="5,0,0,5" Name="txtBeyondPath"></TextBox>
+                  
+                </StackPanel>
+                <Button Height="20" Width="80" Margin="0,0,0,3" Name="btnOk" Click="BtnOk_Click">确定</Button>
+            </StackPanel>
+        </Border>
+        
+    </Grid>
+</Window>
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.IO;
+
+namespace DiffCountByBeyond
+{
+    /// <summary>
+    /// SetBeyondComPath.xaml 的交互逻辑
+    /// </summary>
+    public partial class WindowSetBeyondComPath : Window
+    {
+        public delegate void SetBeyondComPathDelegate(string path);
+        public event SetBeyondComPathDelegate SetBeyondComPathEvent;
+
+        public WindowSetBeyondComPath(string str=null)
+        {
+            InitializeComponent();
+            if (str != null)
+            {
+                txtBeyondPath.Text = str;
+            }
+        }
+
+        private void Btn_Chose_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            folderBrowserDialog.SelectedPath = txtBeyondPath.Text;
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtBeyondPath.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        private void BtnOk_Click(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists(txtBeyondPath.Text) && SetBeyondComPathEvent != null)
+            { 
+                SetBeyondComPathEvent(txtBeyondPath.Text);
+                this.Close();
+                return;
+            }
+            MessageBox.Show("目录不存在,请重新选择", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        
+    }
+}
