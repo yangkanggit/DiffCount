@@ -1,0 +1,110 @@
+<Window x:Class="DiffCountByBeyond.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiffCountByBeyond.Services"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="420"  Width="620" Loaded="Window_Loaded">
+    <Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Config">
+                    <MenuItem Header="SetBCPath" Name="btnSetBCPath" Click="BtnSetBCPath_Click"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <Grid DockPanel.Dock="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition ></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel  Margin="5,0" HorizontalAlignment="Stretch" >
+                        <Button Content="BaseDirPath" Height="28"  Name="btnBase" Margin="5,0" Click="BtnBase_Click" MinWidth="75"></Button>
+                        <TextBox Name="txtBasePath" Height="28" Text="{Binding BasePath}" VerticalContentAlignment="Center"></TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="5,0" HorizontalAlignment="Stretch" Grid.Row="1">
+                        <Button Content="NewDirPath" Margin="5,0" Height="28" Name="btnNew" Click="BtnNew_Click" MinWidth="75" ></Button>
+                        <TextBox Name="txtNewPath" Height="28" Text="{Binding NewPath}" VerticalContentAlignment="Center"></TextBox>
+                    </DockPanel>
+                    <StackPanel Grid.Column="1" Grid.RowSpan="2">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <RadioButton Name="rbtDir" IsChecked="True" Checked="RbtDir_Checked">Directory</RadioButton>
+                            <RadioButton Name="rbtnFile" Checked="RbtnFile_Checked">File</RadioButton>
+                        </StackPanel>
+                        <Button  Height="35" Content="Begin" Width="80" Name="btnBegin" Click="BtnBegin_Click" VerticalAlignment="Center"></Button>
+                    </StackPanel>
+                    <DockPanel Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                        <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" DockPanel.Dock="Left">Filemasks</TextBlock>
+                        <TextBox DockPanel.Dock="Right" Width="30" Margin="0,0,10,0" Text="5" Name="txtBackThread"  InputMethod.IsInputMethodEnabled="False" PreviewKeyDown="TxtBackThread_PreviewKeyDown" VerticalContentAlignment="Center"></TextBox>
+                        <Label DockPanel.Dock="Right"> 后台线程数:</Label>
+                        
+                        <ComboBox Width="100" Margin="0,0,10,0" DockPanel.Dock="Right" IsEditable="True" Name="cmbMask">
+                            <CheckBox Name="chcAll" Checked="ChcAll_Checked" Width="100">全选</CheckBox>
+                            <CheckBox Name="chcCCpp" Width="100" Click="ChcCCpp_Click" IsChecked="True">C/C++</CheckBox>
+                            <CheckBox Name="chcPy" Width="100" Click="ChcPy_Click">Python</CheckBox>
+                            <CheckBox Name="chcJave" Width="100" Click="ChcJave_Click">Java</CheckBox>
+                            <CheckBox Name="chcGo" Width="100" Click="ChcGo_Click">Go</CheckBox>
+                            <CheckBox Name="chcSql" Width="100" Click="ChcSql_Click">Sql</CheckBox>
+                        </ComboBox>
+                      
+                        <TextBox Margin="5,0" Text="{Binding FileMask}" Name="txtFileMask" VerticalContentAlignment="Center"></TextBox>
+                    </DockPanel>
+                </Grid>
+                <StackPanel Grid.Row="1" Margin="5,2" Grid.ColumnSpan="2">
+                    <!--<StackPanel.Resources>
+                        <ObjectDataProvider x:Key="ItemAndLines" ObjectType="{x:Type local:DataBanding}" MethodName="GetItemLines"></ObjectDataProvider>
+                    </StackPanel.Resources>-->
+                    <StackPanel.Resources>
+                        <local:MyConverter x:Key="ColorConverter"></local:MyConverter>
+                    </StackPanel.Resources>
+                    <StackPanel>
+                        <DockPanel Visibility="Hidden" Name="docPro">
+                            <Label Padding="0" Margin="5,0,0,0" Name="labAll" Content="{Binding ElementName=proBar,Path=Value}"></Label>
+                            <Label Padding="0">/</Label>
+                            <Label Padding="0" Name="labDone" Content="{Binding ElementName=proBar,Path=Maximum}"></Label>
+                            <ProgressBar Height="10" Margin="5,0,5,0" Name="proBar"></ProgressBar>
+                        </DockPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="25"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Margin="5,0,0,0" Padding="0" Grid.Column="0" Text="{Binding BaseFileName}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                            <Label Padding="5,0,5,0" Grid.Column="1" FontWeight="Bold" Foreground="#FF766D6D" >VS</Label>
+                            <TextBlock Padding="0" Margin="0,0,5,0" Grid.Column="2" Text="{Binding NewFileName}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                        </Grid>
+                    </StackPanel>
+                  
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" Name="dataGridShow" ItemsSource="{Binding ItemAndLines}" CanUserSortColumns="False">
+                       
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="itemH" Header="         项目         " Binding="{Binding Items}">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn   Header="         行数        " Binding="{Binding Path=Lines}" >
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn Header="        备注          " >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Remarks}" ></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
